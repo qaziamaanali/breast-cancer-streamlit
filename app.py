@@ -47,13 +47,6 @@ st.markdown(
         margin-bottom: 25px;
     }
 
-    .info-box {
-        padding: 20px;
-        border-radius: 10px;
-        background-color: #f5f7fa;
-        margin-bottom: 20px;
-    }
-
     .result-box {
         padding: 25px;
         border-radius: 12px;
@@ -62,14 +55,28 @@ st.markdown(
         margin-bottom: 20px;
     }
 
+    /* Benign result */
     .benign {
-        background-color: #dff5e5;
-        border: 1px solid #9bd5aa;
+        background-color: #d9f2df;
+        border: 2px solid #28a745;
+        color: #145c25 !important;
     }
 
+    .benign h2,
+    .benign p {
+        color: #145c25 !important;
+    }
+
+    /* Malignant result */
     .malignant {
-        background-color: #ffe2e2;
-        border: 1px solid #e0a0a0;
+        background-color: #f8d7da;
+        border: 2px solid #dc3545;
+        color: #721c24 !important;
+    }
+
+    .malignant h2,
+    .malignant p {
+        color: #721c24 !important;
     }
 
     .probability {
@@ -112,12 +119,9 @@ with st.expander("ℹ️ About this model"):
         trained to classify breast tumor samples as **Benign** or
         **Malignant**.
 
-        The model intentionally uses only one feature:
+        The model uses only one feature:
 
         **radius_mean**
-
-        `radius_mean` represents the mean radius of the cell nuclei
-        measured from the breast tissue sample.
         """
     )
 
@@ -145,14 +149,15 @@ st.write(
     "Enter the `radius_mean` value obtained from the sample."
 )
 
+# Changed back to 0–50
 radius_mean = st.number_input(
     "Radius Mean",
-    min_value=6.9,
-    max_value=28.2,
+    min_value=0.0,
+    max_value=50.0,
     value=14.0,
     step=0.1,
     format="%.2f",
-    help="Mean radius of the cell nuclei."
+    help="Enter the radius_mean value."
 )
 
 
@@ -186,20 +191,17 @@ if st.button(
     use_container_width=True
 ):
 
-    # Create DataFrame with correct feature name
     input_data = pd.DataFrame(
         [[radius_mean]],
         columns=["radius_mean"]
     )
 
-    # Prediction
     prediction = model.predict(input_data)[0]
 
-    # Probability
     probabilities = model.predict_proba(input_data)[0]
 
-    # Find probability of malignant class
     class_index = list(model.classes_).index(1)
+
     malignant_probability = probabilities[class_index]
 
     # =====================================================
@@ -301,7 +303,7 @@ st.caption(
 
 
 # =========================================================
-# IMPORTANT NOTE
+# DISCLAIMER
 # =========================================================
 
 st.divider()
